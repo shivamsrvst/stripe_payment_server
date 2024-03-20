@@ -12,7 +12,7 @@ const Order = require('./models/orders')
 
 dotenv.config()
 
-const stripe = Stripe(process.env.STRIPE_SECRET);
+const stripe = Stripe("sk_test_51OwKg7SJp533IciySCXfbbCAntLU7ozYgTQ7ptXgLrQORrsq9soCwa1XdojmUHmmv5R00poWXlvP1oeSEl47SXnB0010H6Iy2c");
 mongoose.connect("mongodb+srv://pixelrush2023:pixelrush2023@pixelrush.lvhrtdt.mongodb.net/gamingapp").then(() => console.log("db connected")).catch((err) => console.log(err));
 
 const createOrder = async (customer, data) => {
