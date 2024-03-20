@@ -13,7 +13,7 @@ const Order = require('./models/orders')
 dotenv.config()
 
 const stripe = Stripe(process.env.STRIPE_SECRET);
-mongoose.connect(process.env.MONGO_URL).then(() => console.log("db connected")).catch((err) => console.log(err));
+mongoose.connect("mongodb+srv://pixelrush2023:pixelrush2023@pixelrush.lvhrtdt.mongodb.net/gamingapp").then(() => console.log("db connected")).catch((err) => console.log(err));
 
 const createOrder = async (customer, data) => {
   const Items = JSON.parse(customer.metadata.cart);
