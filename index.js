@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express();
 const cors = require('cors');
-const port = 3000
+const port = 3003
 const Stripe = require("stripe");
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
@@ -10,10 +10,10 @@ const bodyParser = require('body-parser');
 const Order = require('./models/orders')
 
 
-dotenv.config()
+dotenv.config();
 
-const stripe = Stripe("sk_test_51OwKg7SJp533IciySCXfbbCAntLU7ozYgTQ7ptXgLrQORrsq9soCwa1XdojmUHmmv5R00poWXlvP1oeSEl47SXnB0010H6Iy2c");
-mongoose.connect("mongodb+srv://pixelrush2023:pixelrush2023@pixelrush.lvhrtdt.mongodb.net/gamingapp").then(() => console.log("db connected")).catch((err) => console.log(err));
+const stripe = Stripe(process.env.STRIPE_SECRET);
+mongoose.connect(process.env.MONGO_URL).then(() => console.log("db connected")).catch((err) => console.log(err));
 
 const createOrder = async (customer, data) => {
   const Items = JSON.parse(customer.metadata.cart);
