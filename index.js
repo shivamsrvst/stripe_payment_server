@@ -7,8 +7,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const stripeRouter = require("./routes/stripe");
 const bodyParser = require('body-parser');
-const Order = require('./models/orders')
-
+const StripeOrder = require('./models/StripeOrder'); // Import the StripeOrder model
 
 dotenv.config();
 
@@ -25,15 +24,14 @@ const createOrder = async (customer, data) => {
     };
   });
 
-  const newOrder = new Order({
+  const newOrder = new StripeOrder({
+    orderId: data.payment_intent,
     userId: customer.metadata.userId,
     customerId: data.customer,
-    // paymentIntentId: data.payment_intent,
     products,
     subtotal: data.amount_subtotal,
     total: data.amount_total,
-    // shipping: data.customer_details,
-    payment_status: data.payment_status,
+    paymentStatus: data.payment_status,
   });
 
   try {
@@ -46,8 +44,6 @@ const createOrder = async (customer, data) => {
 
 const endpointSecret = "whsec_qMzvtWSUy5lOijSNvugIv8Ue8nlLOeAr";
 
-
-
 app.post('/webhook', express.raw({ type: 'application/json' }), (request, response) => {
   const sig = request.headers['stripe-signature'];
 
@@ -59,13 +55,11 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (request, respon
     response.status(400).send(`Webhook Error: ${err.message}`);
     return;
   }
- 
-
 
   // Handle the event
   switch (event.type) {
     case 'payment_intent.succeeded':
-       paymentIntentSucceeded = event.data.object;
+      paymentIntentSucceeded = event.data.object;
       // console.log(paymentIntentSucceeded);
       break;
 
@@ -87,14 +81,15 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (request, respon
 
             console.log(products[0].supplier);
             
-            const newOrder = new Order({
+            const newOrder = new StripeOrder({
+              orderId: checkoutData.payment_intent,
               userId: customer.metadata.userId,
               customerId: checkoutData.customer,
               productId: products[0].productId,
               quantity: products[0].quantity,
               subtotal: checkoutData.amount_subtotal/100,
               total: checkoutData.amount_total/100,
-              payment_status: checkoutData.payment_status,
+              paymentStatus: checkoutData.payment_status,
             });
 
             try {
@@ -123,4 +118,4 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 app.use("/stripe", stripeRouter);
 
-app.listen(process.env.PORT || port, () => console.log(`App listening on port ${process.env.PORT}!`))
+app.listen(process.env.PORT || port, () => console.log(`App listening on port ${process.env.PORT}!`));
