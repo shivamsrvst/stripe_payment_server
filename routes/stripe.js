@@ -34,9 +34,9 @@ router.post("/create-checkout-session", async (req, res) => {
     metadata: {
       userId: req.body.userId,
       cart: JSON.stringify(req.body.cartItems),
+      shipping:req.body.shippingAmount,
+      discount:req.body.discountAmount
     },
-    shipping:req.body.shippingAmount,
-    discount:req.body.discountAmount
   });
 
   const line_items = req.body.cartItems.map((item) => {
