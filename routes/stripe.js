@@ -59,7 +59,7 @@ router.post("/create-checkout-session", async (req, res) => {
       price_data: {
         currency: "usd",
         product_data: {
-          name: "shipping",
+          name: "Shipping",
         },
         unit_amount: req.body.shippingAmount * 100,
       },
@@ -73,9 +73,9 @@ router.post("/create-checkout-session", async (req, res) => {
       price_data: {
         currency: "usd",
         product_data: {
-          name: "discount",
+          name: "Discount",
         },
-        unit_amount: -req.body.discountAmount * 100, 
+        unit_amount: req.body.discountAmount * 100, 
       },
       quantity: 1,
     });
