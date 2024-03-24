@@ -35,8 +35,6 @@ router.post("/create-checkout-session", async (req, res) => {
       userId: req.body.userId,
       cart: JSON.stringify(req.body.cartItems),
     },
-    shipping:JSON.stringify(req.body.shippingAmount),
-    discount:JSON.stringify(req.body.discountAmount)
   });
 
   const line_items = req.body.cartItems.map((item) => {
@@ -56,6 +54,33 @@ router.post("/create-checkout-session", async (req, res) => {
       quantity: item.cartQuantity,
     };
   });
+  if (req.body.shippingAmount) { 
+    line_items.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: "Shipping",
+        },
+        unit_amount: req.body.shippingAmount * 100,
+      },
+      quantity: 1,
+    });
+  }
+  
+  // Add discount as a line item 
+  if (req.body.discountAmount) { 
+    line_items.push({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: "Discount",
+        },
+        unit_amount: -req.body.discountAmount * 100, 
+      },
+      quantity: 1,
+    });
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
       
