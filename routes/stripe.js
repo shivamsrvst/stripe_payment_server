@@ -72,16 +72,10 @@ router.post("/create-checkout-session", async (req, res) => {
   
   // Add discount as a line item 
   if (req.body.discountAmount) { 
-    line_items.push({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: "Discount",
-        },
-        unit_amount: req.body.discountAmount * 100, 
-      },
-      quantity: 1,
-    });
+    const coupon = await stripe.coupons.retrieve('cwhHsYmu'); 
+
+    // Add the coupon to the session
+    session.discounts = [{ coupon: coupon.id }];
   }
 
   const session = await stripe.checkout.sessions.create({
