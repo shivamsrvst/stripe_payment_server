@@ -30,10 +30,13 @@ router.get("/cancel", (req, res) => {
 
 
 router.post("/create-checkout-session", async (req, res) => {
+  const {shippingAmount,discountAmount}=req.body;
   const customer = await stripe.customers.create({
     metadata: {
       userId: req.body.userId,
       cart: JSON.stringify(req.body.cartItems),
+      shipping:shippingAmount,
+      discount:discountAmount
     },
   });
 
@@ -61,7 +64,7 @@ router.post("/create-checkout-session", async (req, res) => {
         product_data: {
           name: "Shipping",
         },
-        unit_amount: Math.round(0-req.body.shippingAmount * 100),
+        unit_amount:req.body.shippingAmount * 100,
       },
       quantity: 1,
     });
