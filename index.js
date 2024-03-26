@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const stripeRouter = require("./routes/stripe");
 const bodyParser = require('body-parser');
-const StripeOrder = require('./models/StripeOrder'); // Import the StripeOrder model
+const Order = require('./models/Order'); // Import the StripeOrder model
 
 dotenv.config();
 
@@ -24,7 +24,7 @@ const createOrder = async (customer, data) => {
     };
   });
 
-  const newOrder = new StripeOrder({
+  const newOrder = new Order({
     orderId: data.payment_intent,
     userId: customer.metadata.userId,
     customerId: data.customer,
@@ -81,7 +81,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (request, respon
 
             console.log(products[0].supplier);
             
-            const newOrder = new StripeOrder({
+            const newOrder = new Order({
               orderId: checkoutData.payment_intent,
               userId: customer.metadata.userId,
               customerId: checkoutData.customer,

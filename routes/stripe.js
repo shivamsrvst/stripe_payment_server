@@ -3,7 +3,7 @@ const Stripe = require("stripe");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
-const StripeOrder = require("../models/Order"); // Import the StripeOrder model
+const Order = require("../models/Order"); // Import the StripeOrder model
 require("dotenv").config();
 
 const stripe = Stripe(process.env.STRIPE_SECRET);
@@ -110,7 +110,7 @@ const createOrder = async (customer, data) => {
     };
   });
 
-  const newOrder = new StripeOrder({
+  const newOrder = new Order({
     orderId: data.payment_intent,
     userId: customer.metadata.userId,
     customerId: data.customer,
