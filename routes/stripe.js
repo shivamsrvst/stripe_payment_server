@@ -3,7 +3,7 @@ const Stripe = require("stripe");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
-const StripeOrder = require("../models/StripeOrder"); // Import the StripeOrder model
+const StripeOrder = require("../models/Order"); // Import the StripeOrder model
 require("dotenv").config();
 
 const stripe = Stripe(process.env.STRIPE_SECRET);
@@ -30,13 +30,12 @@ router.get("/cancel", (req, res) => {
 
 
 router.post("/create-checkout-session", async (req, res) => {
-  const {shippingAmount,discountAmount}=req.body;
+  const {shippingAmount,discountAmount,amount}=req.body;
   const customer = await stripe.customers.create({
+    amount:amount,
     metadata: {
       userId: req.body.userId,
       cart: JSON.stringify(req.body.cartItems),
-      shipping:shippingAmount,
-      discount:discountAmount
     },
   });
 
@@ -57,7 +56,7 @@ router.post("/create-checkout-session", async (req, res) => {
       quantity: item.cartQuantity,
     };
   });
-  if (req.body.shippingAmount) { 
+  if (shippingAmount) { 
     line_items.push({
       price_data: {
         currency: "usd",
@@ -71,7 +70,7 @@ router.post("/create-checkout-session", async (req, res) => {
   }
   
   // Add discount as a line item 
-  if (req.body.discountAmount) { 
+  if (discountAmount) { 
     line_items.push({
       price_data: {
         currency: "usd",
@@ -91,6 +90,7 @@ router.post("/create-checkout-session", async (req, res) => {
       enabled: false,
     },
     line_items,
+    amount,
     mode: "payment",
     customer: customer.id,
     success_url: "https://pixelrush-stripe-server.up.railway.app/stripe/checkout-success",
