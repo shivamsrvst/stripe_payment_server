@@ -32,7 +32,6 @@ router.get("/cancel", (req, res) => {
 router.post("/create-checkout-session", async (req, res) => {
   const {shippingAmount,discountAmount,amount}=req.body;
   const customer = await stripe.customers.create({
-    amount:amount,
     metadata: {
       userId: req.body.userId,
       cart: JSON.stringify(req.body.cartItems),
@@ -90,7 +89,6 @@ router.post("/create-checkout-session", async (req, res) => {
       enabled: false,
     },
     line_items,
-    amount,
     mode: "payment",
     customer: customer.id,
     success_url: "https://pixelrush-stripe-server.up.railway.app/stripe/checkout-success",
