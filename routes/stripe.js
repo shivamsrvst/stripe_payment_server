@@ -55,7 +55,7 @@ router.post("/create-checkout-session", async (req, res) => {
       quantity: item.cartQuantity,
     };
   });
-  if (shippingAmount) { 
+  if (req.body.shippingAmount) { 
     line_items.push({
       price_data: {
         currency: "usd",
@@ -69,7 +69,7 @@ router.post("/create-checkout-session", async (req, res) => {
   }
   
   // Add discount as a line item 
-  if (discountAmount) { 
+  if (req.body.discountAmount) { 
     line_items.push({
       price_data: {
         currency: "usd",
