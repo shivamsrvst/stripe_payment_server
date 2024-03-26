@@ -42,7 +42,7 @@ const createOrder = async (customer, data) => {
   }
 };
 
-const endpointSecret = "whsec_qMzvtWSUy5lOijSNvugIv8Ue8nlLOeAr";
+const endpointSecret = "whsec_5XqApQG3CzZdyql5y5irjMbNxVigYwnQ";
 
 app.post('/webhook', express.raw({ type: 'application/json' }), (request, response) => {
   const sig = request.headers['stripe-signature'];
